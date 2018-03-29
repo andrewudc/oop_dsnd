@@ -117,7 +117,7 @@ class Binomial(Distribution):
 		return a * b
 		
 
-	def plot_histogram_pdf(self):
+	def plot_bar_pdf(self):
 
 		"""Function to plot the pdf of the binomial distribution
 		
@@ -134,47 +134,49 @@ class Binomial(Distribution):
 		y = []
 		
 		# calculate the x values to visualize
-		for i in range(self.n):
-			tmp = min_range + interval*i
-			x.append(tmp)
-			y.append(self.pdf(tmp))
+		for i in range(self.n + 1):
+			x.append(i)
+			y.append(self.pdf(i))
 
 		# make the plots
-		fig, axes = plt.subplots(2,sharex=True)
-		fig.subplots_adjust(hspace=.5)
-		axes[0].hist(self.data, density=True)
-		axes[0].set_title('Normed Histogram of Data')
-		axes[0].set_ylabel('Density')
+		plt.bar(x, y)
+		plt.title('Distribution of Outcomes')
+		plt.ylabel('Probability')
+		plt.xlabel('Outcome')
 
-		axes[1].plot(x, y)
-		axes[1].set_title('Normal Distribution for \n Sample Mean and Sample Standard Deviation')
-		axes[0].set_ylabel('Density')
 		plt.show()
 
 		return x, y
 		
 	def __add__(self, other):
 		
-		"""Function to add together two Gaussian distributions
+		"""Function to add together two Binomial distributions with equal p
 		
 		Args:
-			other (Gaussian): Gaussian instance
+			other (Binomial): Binomial instance
 			
 		Returns:
-			Gaussian: Gaussian distribution
+			Binomial: Binomial distribution
 			
 		"""
 		
-		result = Gaussian()
-		result.mean = self.mean + other.mean
-		result.stdev = math.sqrt(self.stdev ** 2 + other.stdev ** 2)
+		try:
+			assert self.p == other.p, 'p values are not equal'
+		except AssertionError as error:
+			raise
+		
+		result = Binomial()
+		result.n = self.n + other.n
+		result.p = self.p
+		result.calculate_mean()
+		result.calculate_stdev()
 		
 		return result
 		
 		
 	def __repr__(self):
 	
-		"""Function to output the characteristics of the Gaussian instance
+		"""Function to output the characteristics of the Binomial instance
 		
 		Args:
 			None
@@ -184,4 +186,5 @@ class Binomial(Distribution):
 		
 		"""
 		
-		return "mean {}, standard deviation {}".format(self.mean, self.stdev)
+		return "mean {}, standard deviation {}, p {}, n {}".\
+		format(self.mean, self.stdev, self.p, self.n)
