@@ -1,8 +1,7 @@
 import math
 import matplotlib.pyplot as plt
-from .Generaldistribution import Distribution
 
-class Gaussian(Distribution):
+class Gaussian():
 	""" Gaussian distribution class for calculating and 
 	visualizing a Gaussian distribution.
 	
@@ -12,11 +11,12 @@ class Gaussian(Distribution):
 		data_list (list of floats) a list of floats extracted from the data file
 			
 	"""
-	def __init__(self, mu=0, sigma=1):
+	def __init__(self, mu = 0, sigma = 1):
 		
-		Distribution.__init__(self, mu, sigma)
-	
-		
+		self.mean = mu
+		self.stdev = sigma
+		self.data = []
+
 	
 	def calculate_mean(self):
 	
@@ -29,13 +29,8 @@ class Gaussian(Distribution):
 			float: mean of the data set
 	
 		"""
-		
-		avg = 0
-		
-		for i in self.data:
-			avg += i
-			
-		avg = 1.0 * avg / len(self.data)
+					
+		avg = 1.0 * sum(self.data) / len(self.data)
 		
 		self.mean = avg
 		
@@ -60,7 +55,7 @@ class Gaussian(Distribution):
 		else:
 			n = len(self.data)
 	
-		mean = self.calculate_mean()
+		mean = self.mean
 	
 		sigma = 0
 	
@@ -73,6 +68,32 @@ class Gaussian(Distribution):
 		
 		return self.stdev
 		
+
+	def read_data_file(self, file_name, sample=True):
+	
+		"""Function to read in data from a txt file. The txt file should have
+		one number (float) per line. The numbers are stored in the data attribute. 
+		After reading in the file, the mean and standard deviation are calculated
+				
+		Args:
+			file_name (string): name of a file to read from
+		
+		Returns:
+			None
+		
+		"""
+			
+		with open(file_name) as file:
+			data_list = []
+			line = file.readline()
+			while line:
+				data_list.append(int(line))
+				line = file.readline()
+		file.close()
+	
+		self.data = data_list
+		self.mean = self.calculate_mean()
+		self.stdev = self.calculate_stdev(sample)
 		
 		
 	def plot_histogram(self):
