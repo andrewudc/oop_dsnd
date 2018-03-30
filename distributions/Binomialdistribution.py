@@ -57,7 +57,7 @@ class Binomial(Distribution):
 	
 		"""
 		
-		self.stdev = self.n * self.p * (1 - self.p)
+		self.stdev = math.sqrt(self.n * self.p * (1 - self.p))
 		
 		return self.stdev
 		
